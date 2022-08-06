@@ -1,6 +1,8 @@
 package main
 
-import "math/rand"
+import (
+	"math/rand"
+)
 
 type Simulation struct {
 	TMax       int
@@ -19,23 +21,20 @@ func NewSimulation(nextTarget int, targets []Vec3) *Simulation {
 func (s Simulation) Run(tracker Tracker, fileOut string) {
 	ti := 0
 	target := s.Targets[ti]
-	hasMeasurement := false
 
-	canvas := NewCanvas(s.TMax, 2, 50)
+	canvas := NewCanvas(s.TMax, tracker.NumLeds()+1, 10)
 
 	rand.Seed(0)
-	jitter := 20.0
+	jitter := 50.0
 
 	for t := 1; t < s.TMax; t++ {
 		target.X += (rand.Float64() - 0.5) * jitter
 		target.Y += (rand.Float64() - 0.5) * jitter
 		target.Z += (rand.Float64() - 0.5) * jitter
 
-		hasMeasurement = target.X+target.Y+target.Z > 50
-
 		canvas.Draw(t, 0, FloatToColor(target.X, target.Y, target.Z))
 
-		for i, pos := range tracker.Step(target, hasMeasurement) {
+		for i, pos := range tracker.Step(target) {
 			canvas.Draw(t, i+1, FloatToColor(pos.X, pos.Y, pos.Z))
 		}
 

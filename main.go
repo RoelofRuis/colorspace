@@ -1,7 +1,8 @@
 package main
 
 type Tracker interface {
-	Step(target Vec3, hasMeasurement bool) []Vec3
+	NumLeds() int
+	Step(target Vec3) []Vec3
 }
 
 func main() {
@@ -10,24 +11,18 @@ func main() {
 		[]Vec3{
 			{0.0, 0.0, 250.0},
 			{0.0, 0.0, 0.0},
-			{0.0, 0.0, 0.0},
 			{250.0, 250.0, 0.0},
-			{0.0, 0.0, 0.0},
 			{0.0, 0.0, 0.0},
 			{250.0, 0.0, 0.0},
 			{0.0, 0.0, 0.0},
-			{0.0, 0.0, 0.0},
 			{0.0, 250.0, 0.0},
-			{0.0, 0.0, 0.0},
 			{0.0, 0.0, 0.0},
 			{250.0, 0.0, 250.0},
 			{0.0, 0.0, 0.0},
-			{0.0, 0.0, 0.0},
 			{0.0, 250.0, 250.0},
-			{0.0, 0.0, 0.0},
 			{0.0, 0.0, 0.0},
 		})
 
-	linTracker := NewLinearTracker(10.0)
+	linTracker := NewLinearTracker(10.0, 20)
 	sim.Run(linTracker, "lin_out.png")
 }
