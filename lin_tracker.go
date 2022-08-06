@@ -16,14 +16,15 @@ func NewLinearTracker(maxDist float64) *LinearTracker {
 	}
 }
 
-func (t *LinearTracker) Step(target Vec3) Vec3 {
-	if !target.IsZero() {
+func (t *LinearTracker) Step(target Vec3, hasMeasurement bool) []Vec3 {
+	if hasMeasurement {
 		t.lastReading = target
 	}
 
 	xd := t.lastReading.X - t.position.X
 	yd := t.lastReading.Y - t.position.Y
 	zd := t.lastReading.Z - t.position.Z
+
 	dist := math.Sqrt(xd*xd + yd*yd + zd*zd)
 
 	if dist < t.maxDist {
@@ -34,5 +35,5 @@ func (t *LinearTracker) Step(target Vec3) Vec3 {
 		t.position.Z += (zd * t.maxDist) / dist
 	}
 
-	return t.position
+	return []Vec3{t.position}
 }
