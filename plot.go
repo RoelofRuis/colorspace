@@ -11,22 +11,18 @@ import (
 
 type Canvas struct {
 	img   *image.RGBA
-	width int
+	scale int
 }
 
-func NewCanvas(width int) *Canvas {
+func NewCanvas(width, height, scale int) *Canvas {
 	return &Canvas{
-		img:   image.NewRGBA(image.Rect(0, 0, width, 120)),
-		width: width,
+		img:   image.NewRGBA(image.Rect(0, 0, width*scale, height*scale)),
+		scale: scale,
 	}
 }
 
-func (p *Canvas) DrawUpperBand(t int, col color.Color) {
-	p.DrawRect(t*10, 0, (t+1)*10, 100, col)
-}
-
-func (p *Canvas) DrawLowerBand(t int, col color.Color) {
-	p.DrawRect(t*10, 100, (t+1)*10, 120, col)
+func (p *Canvas) Draw(x, y int, col color.Color) {
+	p.DrawRect(x*p.scale, y*p.scale, (x+1)*p.scale, (y+1)*p.scale, col)
 }
 
 func (p *Canvas) DrawRect(x0, y0, x1, y1 int, col color.Color) {

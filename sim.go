@@ -18,12 +18,12 @@ func (s Simulation) Run(tracker Tracker, fileOut string) {
 	ti := 0
 	target := s.Targets[ti]
 
-	canvas := NewCanvas(s.TMax * 10)
+	canvas := NewCanvas(s.TMax, 2, 10)
 
 	for t := 1; t < s.TMax; t++ {
 		pos := tracker.Step(target)
-		canvas.DrawUpperBand(t, FloatToColor(pos.X, pos.Y, pos.Z))
-		canvas.DrawLowerBand(t, FloatToColor(target.X, target.Y, target.Z))
+		canvas.Draw(t, 0, FloatToColor(target.X, target.Y, target.Z))
+		canvas.Draw(t, 1, FloatToColor(pos.X, pos.Y, pos.Z))
 
 		if t%s.NextTarget == 0 {
 			ti = (ti + 1) % len(s.Targets)
@@ -31,5 +31,5 @@ func (s Simulation) Run(tracker Tracker, fileOut string) {
 		}
 	}
 
-	canvas.WriteToFile(fileOut)
+	canvas.WriteToFile("out/" + fileOut)
 }
