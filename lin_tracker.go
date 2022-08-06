@@ -4,6 +4,8 @@ import "math"
 
 type LinearTracker struct {
 	lastReading Vec3
+	averagesIdx int
+	averages    []Vec3
 	leds        []Vec3
 	maxDist     float64
 }
@@ -16,14 +18,25 @@ func NewLinearTracker(maxDist float64, numLeds int) *LinearTracker {
 
 	return &LinearTracker{
 		lastReading: Vec3{0.0, 0.0, 0.0},
+		averagesIdx: 0,
+		averages:    make([]Vec3, 3),
 		leds:        leds,
 		maxDist:     maxDist,
 	}
 }
 
 func (t *LinearTracker) Step(target Vec3) []Vec3 {
-	if target.X+target.Y+target.Z > 200 {
-		t.lastReading = target
+	hasReading := target.X+target.Y+target.Z > 200
+
+	if hasReading {
+		t.averages[t.averagesIdx] = target
+		t.averagesIdx = (t.averagesIdx + 1) % 3
+
+		t.lastReading = Vec3{
+			(t.averages[0].X + t.averages[1].X + t.averages[2].X) / 3,
+			(t.averages[0].Y + t.averages[1].Y + t.averages[2].Y) / 3,
+			(t.averages[0].Z + t.averages[1].Z + t.averages[2].Z) / 3,
+		}
 	}
 
 	xd := t.lastReading.X - t.leds[0].X
