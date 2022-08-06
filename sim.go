@@ -2,6 +2,7 @@ package main
 
 import (
 	"math/rand"
+	"time"
 )
 
 type Simulation struct {
@@ -44,5 +45,5 @@ func (s Simulation) Run(tracker Tracker, fileOut string) {
 		}
 	}
 
-	canvas.WriteToFile("out/" + fileOut)
+	canvas.WriteToFile("out/" + fileOut + time.Now().Format("20060102150405") + ".png")
 }

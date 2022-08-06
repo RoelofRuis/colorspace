@@ -23,6 +23,10 @@ func main() {
 			{0.0, 0.0, 0.0},
 		})
 
-	linTracker := NewLinearTracker(10.0, 20)
-	sim.Run(linTracker, "lin_out.png")
+	linTracker := NewLinearTracker(
+		20,
+		10.0,
+		20,
+	)
+	sim.Run(linTracker, "lin_out")
 }

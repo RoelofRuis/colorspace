@@ -10,7 +10,7 @@ type LinearTracker struct {
 	maxDist     float64
 }
 
-func NewLinearTracker(maxDist float64, numLeds int) *LinearTracker {
+func NewLinearTracker(numLeds int, maxDist float64, numAverages int) *LinearTracker {
 	var leds = make([]Vec3, numLeds)
 	for i := 0; i < numLeds; i++ {
 		leds[i] = Vec3{0.0, 0.0, 0.0}
@@ -19,7 +19,7 @@ func NewLinearTracker(maxDist float64, numLeds int) *LinearTracker {
 	return &LinearTracker{
 		lastReading: Vec3{0.0, 0.0, 0.0},
 		averagesIdx: 0,
-		averages:    make([]Vec3, 3),
+		averages:    make([]Vec3, numAverages),
 		leds:        leds,
 		maxDist:     maxDist,
 	}
@@ -30,12 +30,19 @@ func (t *LinearTracker) Step(target Vec3) []Vec3 {
 
 	if hasReading {
 		t.averages[t.averagesIdx] = target
-		t.averagesIdx = (t.averagesIdx + 1) % 3
+		t.averagesIdx = (t.averagesIdx + 1) % len(t.averages)
+
+		avg := Vec3{}
+		for _, average := range t.averages {
+			avg.X += average.X
+			avg.Y += average.Y
+			avg.Z += average.Z
+		}
 
 		t.lastReading = Vec3{
-			(t.averages[0].X + t.averages[1].X + t.averages[2].X) / 3,
-			(t.averages[0].Y + t.averages[1].Y + t.averages[2].Y) / 3,
-			(t.averages[0].Z + t.averages[1].Z + t.averages[2].Z) / 3,
+			avg.X / float64(len(t.averages)),
+			avg.Y / float64(len(t.averages)),
+			avg.Z / float64(len(t.averages)),
 		}
 	}
 
