@@ -8,13 +8,15 @@ import (
 type Simulation struct {
 	TMax       int
 	NextTarget int
+	Jitter     float64
 	Targets    []Vec3
 }
 
-func NewSimulation(nextTarget int, targets []Vec3) *Simulation {
+func NewSimulation(nextTarget int, jitter float64, targets []Vec3) *Simulation {
 	return &Simulation{
 		TMax:       nextTarget * len(targets),
 		NextTarget: nextTarget,
+		Jitter:     jitter,
 		Targets:    targets,
 	}
 }
@@ -25,13 +27,10 @@ func (s Simulation) Run(tracker Tracker, fileOut string) {
 
 	canvas := NewCanvas(s.TMax, tracker.NumLeds()+1, 10)
 
-	rand.Seed(0)
-	jitter := 50.0
-
 	for t := 1; t < s.TMax; t++ {
-		target.X += (rand.Float64() - 0.5) * jitter
-		target.Y += (rand.Float64() - 0.5) * jitter
-		target.Z += (rand.Float64() - 0.5) * jitter
+		target.X += (rand.Float64() - 0.5) * s.Jitter
+		target.Y += (rand.Float64() - 0.5) * s.Jitter
+		target.Z += (rand.Float64() - 0.5) * s.Jitter
 
 		canvas.Draw(t, 0, FloatToColor(target.X, target.Y, target.Z))
 
